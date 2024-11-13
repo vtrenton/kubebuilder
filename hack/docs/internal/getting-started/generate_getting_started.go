@@ -285,8 +285,6 @@ const controllerStatusTypes = `
 const (
 	// typeAvailableMemcached represents the status of the Deployment reconciliation
 	typeAvailableMemcached = "Available"
-	// typeDegradedMemcached represents the status used when the custom resource is deleted and the finalizer operations are yet to occur.
-	typeDegradedMemcached = "Degraded"
 )`
 
 const controllerInfoReconcileOld = `// TODO(user): Modify the Reconcile function to compare the state specified by
@@ -321,7 +319,7 @@ const controllerReconcileImplementation = `// Fetch the Memcached instance
 	}
 
 	// Let's just set the status as Unknown when no status is available
-	if memcached.Status.Conditions == nil || len(memcached.Status.Conditions) == 0 {
+	if len(memcached.Status.Conditions) == 0 {
 		meta.SetStatusCondition(&memcached.Status.Conditions, metav1.Condition{Type: typeAvailableMemcached, Status: metav1.ConditionUnknown, Reason: "Reconciling", Message: "Starting reconciliation"})
 		if err = r.Status().Update(ctx, memcached); err != nil {
 			log.Error(err, "Failed to update Memcached status")
